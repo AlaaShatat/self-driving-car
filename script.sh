@@ -1,0 +1,2 @@
+#python final.py "C:\Users\Wiin11\Downloads\Advanced-Lane-Lines-master\Advanced-Lane-Lines-master\challenge_video.mp4" "C:\Users\Wiin11\Downloads\Advanced-Lane-Lines-master\Advanced-Lane-Lines-master\debugLane.mp4" 1 
+python final.py $1 $2 $3
