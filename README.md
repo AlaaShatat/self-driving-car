@@ -1,4 +1,6 @@
 # Self-driving-car
+* Note: I misconfigured github at first, and there are 5 authors instead of four. You can find that Alaa
+    Shatat can contribute with two accounts “authors”
 ## Lane line detection stage
 ### Run the code from the shell script 
 ### Make sure to download the code with all files. 
