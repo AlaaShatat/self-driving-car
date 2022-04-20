@@ -325,3 +325,103 @@ def thresholding (img1):
     x=  threshold_rel(l_channel, 0.8, 1.0)
     x = np.dstack((x,x,x))
     return img2, x
+#""" This a function for transforming image between front view and top view "bird eye"
+ #       src (np.array): Coordinates of 4 source points
+  #      dst (np.array): Coordinates of 4 destination points
+   #     M (np.array): Matrix to transform image from front view to top view
+    #    M_inv (np.array): Matrix to transform image from top view to front view
+    #"""
+def PerspectiveTransformation(image):
+    src = np.float32([(550, 460),     # top-left
+                      (150, 720),     # bottom-left
+                      (1200, 720),    # bottom-right
+                      (770, 460)])    # top-right
+    dst = np.float32([(100, 0),
+                      (100, 720),
+                     (1100, 720),
+                       (1100, 0)])
+  
+ 
+    M = cv2.getPerspectiveTransform(src, dst)
+    M_inv = cv2.getPerspectiveTransform(dst, src)
+    
+    return M,M_inv
+# Take a front view image and transform to top view"""
+def forward(img, img_size=(1280, 720), flags=cv2.INTER_LINEAR):
+    
+    M,M_inv=PerspectiveTransformation(img)
+    return cv2.warpPerspective(img, M, img_size, flags=flags)
+     #Take a top view image and transform it to front view"""
+def backward(img, img_size=(1280, 720), flags=cv2.INTER_LINEAR):
+    M,M_inv=PerspectiveTransformation(img)
+    return cv2.warpPerspective(img, M_inv, img_size, flags=flags)
+
+# create an object to continue with 
+lanelines = LaneLines()
+
+# debug mode all views  debug 1
+def process_image_debug(img):
+    # step 1
+    img1 = forward(img)
+
+   #img1 = np.copy(img)
+   #step 2
+    img2,x=thresholding(img1)
+    x,l_channel = thresholding(img)
+    im= np.dstack((img2, img2, img2))
+    imgg1 = np.concatenate((l_channel, img1), axis=0)#first
+    imgg1=cv2.resize(imgg1,(720,720))
+   
+  
+  #  img2 = birdeye.forward(img2) 
+    # step 3
+    img3 = lanelines.forward(img2)
+    imgg = np.concatenate((im, img3), axis=0)#second
+    imgg=cv2.resize(imgg,(720,720))
+    
+    imgg = np.concatenate((imgg1, imgg), axis = 1)
+    # step 4
+    img4 = backward(img3)
+    out_img = cv2.addWeighted(img, 1, img4, 1, 0)
+    out_img = lanelines.plot(out_img)
+    out_img = np.concatenate((out_img, imgg), axis=1)
+   
+   
+    return out_img
+# lane video only 1
+def process_image(img):
+     # step 1
+    img1 = forward(img)
+
+   #img1 = np.copy(img)
+   #step 2
+    img2,x=thresholding(img1) 
+    # step 3
+    img3 = lanelines.forward(img2)
+   
+    # step 4
+    img4 = backward(img3)
+    out_img = cv2.addWeighted(img, 1, img4, 1, 0)
+    out_img = lanelines.plot(out_img) # add lanes to the original image
+   
+    return out_img
+
+def main():
+
+    # if argument is 0 then it it the debug mode ,also we need the path and pass it to the clip line  
+    #print(input_path,output_path,file_name,mode)
+    
+    if mode == "1":
+        clip = VideoFileClip(input_path)
+        out_clip = clip.fl_image(process_image_debug)
+        out_clip.write_videofile(output_path, audio=False)
+    
+    # if argument is 1 the lane view mode,also we need the path and pass it to the clip line  
+    if mode == "0":
+        clip = VideoFileClip(input_path)
+        out_clip = clip.fl_image(process_image)
+        out_clip.write_videofile(output_path, audio=False)
+
+if __name__ == "__main__":
+    main()
+
