@@ -1,2 +1,7 @@
 
 __pycache__/code.cpython-310.pyc
+yolo/yolo/test2.jpg
+yolo/yolo/yolov3.weights
+yolo/yolo/yolov3.cfg
+yolo/yolo/test_img.png
+yolo/yolo/coco.names

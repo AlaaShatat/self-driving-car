@@ -52,4 +52,36 @@ def process(img):
                 boxes.append([x, y, int(bw), int(bh)])
                 confidences.append(float(confidence))
                 classIDs.append(classID)
-               
+     
+    idxs=cv2.dnn.NMSBoxes(boxes,confidences, 0.8, 0.8)
+    labels_path=os.path.join("yolo", "coco.names")
+    labels=open(labels_path).read().strip().split("\n")
+    if(m==1):
+        for i in idxs.flatten():
+            (x,y)= [boxes[i][0],boxes[i][1]]
+            (w,h)= [boxes[i][2],boxes[i][3]]
+            cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,255),2)
+            cv2.putText(img,"{}:{}".format(labels[classIDs[i]],confidences[i]),(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.5,(0,139,139),2)
+    m=0  
+    img=cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+    return img
+'''
+#cv2.imshow("Image",cv2.cvtColor(img, cv2.COLOR_RGB2BGR))
+        #cv2.waitKey(0)
+# Process video.
+#in_clip = VideoFileClip("project_video_Trim.mp4",audio=False)
+in_clip = VideoFileClip(input_path,audio=False)
+out_filename = 'out.mp4'
+output_path = output_path + out_filename
+out_clip = in_clip.fl_image(process)
+out_clip.write_videofile(output_path,audio=False)
+#out_clip.write_videofile("out_filename.mp4",audio=False)
+'''
+
+	
+	    
+
+if __name__ == "__main__":
+	in_clip = VideoFileClip(input_path,audio=False)
+	out_clip = in_clip.fl_image(process)
+	out_clip.write_videofile(output_path,audio=False)
