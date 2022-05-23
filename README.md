@@ -6,7 +6,7 @@
 ### you can find the yolo files and the output videos in the link below 
 - https://drive.google.com/drive/folders/10ru1gLn4uQPeuzVoRDbgiAnXFvqGbteu?usp=sharing
 1. Open git bash. 
-2. Run this command: bash script.sh input\_path output\_path .
+2. Run this command: bash run.sh input\_path output\_path .
 - Input\_path example: "C:\Users\Wiin11\Downloads\challenge\_video.mp4".
 - Output\_path example: "C:\Users\Wiin11\Downloads\output.mp4".
 3. Check the ouput\_path to get the output video.
